@@ -1,10 +1,14 @@
 package com.mainsoft.prueba.controllers;
 
 import com.mainsoft.prueba.repository.dtos.SaleDto;
+import com.mainsoft.prueba.repository.entities.Sale;
+import com.mainsoft.prueba.repository.entities.SaleDetail;
 import com.mainsoft.prueba.services.ISalesServ;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,10 +36,13 @@ public class SalesCtrl {
         return iSalesServ.addSale(saleDto);
     }
 
-    @GetMapping(value = "rxjava", produces = {"application/json"})
-    public Single<ResponseEntity<SaleDto>> getSaleDetails(@RequestParam(value = "idSale") Long idSale) {
-        return iSalesServ.getSaleDetails(idSale)
-                .subscribeOn(Schedulers.io())
-                .map(ResponseEntity::ok);
+    @GetMapping(value = "rxjava", produces = {"application/json"}, consumes = {"application/json"})
+    public Observable<SaleDetail> getSaleDetails(@RequestParam(value = "idSale") Long idSale) {
+        return iSalesServ.getSaleDetails(idSale);
+    }
+
+    @GetMapping(value = "rxjava2", produces = {"application/json"}, consumes = {"application/json"})
+    public Single<ResponseEntity<Sale>> getSaleDetails2(@RequestParam(value = "idSale") Long idSale) {
+        return iSalesServ.getSaleDetails2(idSale);
     }
 }

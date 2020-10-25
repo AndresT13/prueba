@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +28,13 @@ public class ProductsImpl implements IProductsServ {
 
     @Override
     public ResponseEntity<ProductDto> getProduct(Long idProduct) {
-        ProductDto productDto = convertProduct(iProductDao.getOne(idProduct));
-        return new ResponseEntity<>(productDto, HttpStatus.OK);
+        try{
+            ProductDto productDto = convertProduct(iProductDao.getOne(idProduct));
+            return new ResponseEntity<>(productDto, HttpStatus.OK);
+        }catch (EntityNotFoundException ex){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @Override
